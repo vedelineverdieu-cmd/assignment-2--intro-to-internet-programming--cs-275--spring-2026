@@ -1,19 +1,99 @@
-/* -----------------------------------------------------------------------------
-// This file includes deliberate errors in order for you to verify that
-// Stylelint and EditorConfig are working properly. If both tools are, indeed,
-// working correctly, then you’d see various errors in your editor about
-// indentation and violations of CSS syntax. When you save this file, your
-// editor should strip all excess newlines and whitespace characters from the
-// file. If both of these events occur, then Stylelint and EditorConfig are
-// working correctly.
-//
-// DON’T PROCEED UNTIL YOU’RE SURE STYLELINT AND EDITORCONFIG ARE WORKING RIGHT
-// -------------------------------------------------------------------------- */
-abcdef {
-     color: cs275
+root {
+  font-size: 16px;
 }
 
+body {
+  font-family: 'Open Sans', sans-serif;
+  text-align: center;
+}
 
+h1 {
+  margin-left: 50px;
+  padding-top: 35px;
+  padding-bottom: 20px;
+  line-height: 1.1875;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+h2 {
+  line-height: 1.4;
+  text-transform: uppercase;
+  padding-bottom: 5px;
+  font-weight: 600;
+}
+
+.artist-name {
+  text-decoration: none;
+  font-weight: 300;
+  color: blue;
+}
+
+img {
+  padding-top: 35px;
+}
+
+#img-credit {
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 300;
+  text-align: center;
+  padding-top: 5px;
+
+}
+
+.img-link {
+  text-decoration: none;
+  font-weight: 300;
+  color: blue;
+}
+
+p {
+  line-height: 1.4;
+  font-weight: 300;
+  padding-top: 10px;
+  text-align: left;
+}
+
+.album {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+.carousel-navigation {
+  position: absolute;
+  top: 65%;
+  left: 50%;
+  transform: translate(-50%);
+  width: 640px;
+}
+
+.carousel-navigation a:nth-child(1) {
+  position: absolute;
+  left: 5%;
+  transform: translateY(-150%);
+}
+
+.carousel-navigation a:nth-child(2) {
+  position: absolute;
+  transform: translateY(-150%);
+  right: 5%;
+}
+
+.carousel {
+  width: 680px;
+  overflow: hidden;
+  margin: auto;
+}
+
+.carousel-slides {
+  display: flex;
+}
+
+.review-link {
+  text-decoration: none;
+  color: blue;
+  font-weight: 300;
+}
 
 
 
