@@ -23,10 +23,9 @@ h2 {
   font-weight: 600;
 }
 
-.artist-name {
-  text-decoration: none;
-  font-weight: 300;
-  color: blue;
+.album {
+  padding-right: 20px;
+  padding-left: 20px;
 }
 
 img {
@@ -41,22 +40,10 @@ img {
   padding-top: 5px;
 }
 
-.img-link {
-  text-decoration: none;
-  font-weight: 300;
-  color: blue;
-}
-
-p {
-  line-height: 1.4;
-  font-weight: 300;
-  padding-top: 10px;
-  text-align: left;
-}
-
-.album {
-  padding-right: 20px;
-  padding-left: 20px;
+.carousel {
+  width: 680px;
+  overflow: hidden;
+  margin: auto;
 }
 
 .carousel-navigation {
@@ -70,24 +57,39 @@ p {
 .carousel-navigation a:nth-child(1) {
   position: absolute;
   left: 5%;
-  transform: translateY(-300%);
+  transform: translateY(-50%);
 }
 
 .carousel-navigation a:nth-child(2) {
   position: absolute;
-  transform: translateY(-300%);
-  right: 5%;
-}
-
-.carousel {
-  width: 680px;
-  overflow: hidden;
-  margin: auto;
+  transform: translateY(-50%);
+  right: 3%;
 }
 
 .carousel-slides {
   transition: margin-left .3s ease-in-out;
   display: flex;
+  overflow: hidden;
+}
+
+p {
+  line-height: 1.4;
+  font-weight: 300;
+  padding-top: 10px;
+  text-align: left;
+  padding-bottom: 20px;
+}
+
+.artist-name {
+  text-decoration: none;
+  font-weight: 300;
+  color: blue;
+}
+
+.img-link {
+  text-decoration: none;
+  font-weight: 300;
+  color: blue;
 }
 
 .review-link {
