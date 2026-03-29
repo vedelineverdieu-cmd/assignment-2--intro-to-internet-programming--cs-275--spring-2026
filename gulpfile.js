@@ -1,97 +1,125 @@
-const { src, dest, series, watch } = require('gulp');
-const CSSLinter = require('gulp-stylelint');
-const { deleteAsync } = require('del');
-const babel = require('gulp-babel');
-const htmlCompressor = require('gulp-htmlmin');
-const jsCompressor = require('gulp-terser');
-const jsLinter = require('gulp-eslint');
-const browserSync = require('browser-sync').create();
-const sass = require('gulp-sass')(require('sass'));
-
-const reload = browserSync.reload;
+const { src, dest, series, watch } = require(`gulp`),
+    CSSLinter = require(`gulp-stylelint`),
+    { deleteAsync } = require(`del`),
+    babel = require(`gulp-babel`),
+    htmlCompressor = require(`gulp-htmlmin`),
+    jsCompressor = require(`gulp-terser`),
+    cssCompressor = require(`gulp-clean-css`),
+    jsLinter = require(`gulp-eslint`),
+    browserSync = require(`browser-sync`),
+    reload = browserSync.reload;
 
 // Development
-let lintCSS = () => {
-    return src('styles/**/*.css')
-        .pipe(CSSLinter({
-            failAfterError: false,
-            reporters: [{ formatter: 'string', console: true }]
-        }));
-};
-
 let lintJS = () => {
-    return src('js/*.js')
+    return src(`js/main.js`)
         .pipe(jsLinter())
-        .pipe(jsLinter.formatEach('compact'));
+        .pipe(jsLinter.formatEach(`compact`));
 };
 
+// Development
 let transpileJSForDev = () => {
-    return src('js/*.js')
+    return src(`js/main.js`)
         .pipe(babel())
-        .pipe(dest('temp/js'));
+        .pipe(dest(`temp/js`));
 };
 
-let serve = () => {
-    browserSync.init({
-        notify: true,
-        reloadDelay: 50,
-        browser: "chrome",
-        server: {
-            baseDir: './'
-        }
-    });
-
-    watch('js/*.js', series(lintJS, transpileJSForDev)).on('change', reload);
-    watch('styles/**/*.css').on('change', reload);
-    watch('*.html').on('change', reload);
-    watch('img/**/*').on('change', reload);
+// Production
+let compressJS = () => {
+    return src(`js/main.js`)
+        .pipe(jsCompressor({collapseWhitespace: true}))
+        .pipe(dest(`prod/js`));
 };
 
-// Production 
+// Production
 let compressHTML = () => {
-    return src('*.html')
-        .pipe(htmlCompressor({ collapseWhitespace: true }))
-        .pipe(dest('prod'));
+    return src(`index.html`)
+        .pipe(htmlCompressor({collapseWhitespace: true}))
+        .pipe(dest(`prod`));
 };
 
-let compileCSSForProd = () => {
-    return src('styles/main.scss')
-        .pipe(sass.sync({
-            outputStyle: 'compressed'
-        }).on('error', sass.logError))
-        .pipe(dest('prod/styles'));
+// Production
+let compressCSS = () => {
+    return src(`styles/main.css`)
+        .pipe(cssCompressor({collapseWhitespace: true}))
+        .pipe(dest(`prod/styles`));
 };
 
 let copyUnprocessedAssetsForProd = () => {
     return src([
-        `dev/*.*`,             // Source all files,
-        `dev/**`,              // and all folders,
-        `!dev/html/`,          // but not the HTML folder
-        `!dev/html/*.*`,       // or any files in it
-        `!dev/html/**`,        // or any sub folders;
-        `!dev/img/`,           // ignore images;
-        `!dev/img/.gitignore`, // ignore .gitignore;
-        `!dev/**/*.js`,        // ignore JS;
-        `!dev/styles/**`       // and, ignore Sass/CSS.
-    ], {dot: true})
+        `**/*`,                 // copy everything
+        `!index.html`,
+        `!styles/main.css`,
+        `!js/**`,
+        `!prod/**`,
+        `!temp/**`,
+        `!.gitignore`,
+        `!package.json`,
+        `!package-lock.json`,
+        `!node_modules/**`
+    ], { base: `.`, dot: true })
         .pipe(dest(`prod`));
 };
 
+let serve = () => {
+    browserSync({
+        notify: true,
+        reloadDelay: 50,
+        server: {
+            baseDir: [
+                `temp`,
+                `.`
+            ]
+        }
+    });
+
+    watch(`js/main.js`, series(lintJS, transpileJSForDev))
+        .on(`change`, reload);
+
+    watch(`styles/main.css`, lintCSS)
+        .on(`change`, reload);
+
+    watch(`img/**/*`)
+        .on(`change`, reload);
+};
+
 async function clean() {
-    await deleteAsync(['./temp', './prod']);
+    const foldersToDelete = await deleteAsync([`./temp`, `prod`]);
+
+    console.log(`The following directories were deleted:`, foldersToDelete);
 }
 
+// Development
+let lintCSS = () => {
+    return src(`styles/main.css`)
+        .pipe(CSSLinter({
+            failAfterError: false,
+            reporters: [
+                {formatter: `string`, console: true}
+            ]
+        }));
+};
+
+exports.lintJS = lintJS;
+exports.lintCSS = lintCSS;
+exports.transpileJSForDev = transpileJSForDev;
+exports.compressJS = compressJS;
+exports.compressHTML = compressHTML;
+exports.compressCSS = compressCSS;
+exports.copyUnprocessedAssetsForProd = copyUnprocessedAssetsForProd;
+exports.clean = clean;
+
 exports.serve = series(
-    lintCSS,
     lintJS,
+    lintCSS,
     transpileJSForDev,
     serve
 );
 
 exports.build = series(
-    clean,
+    compressJS,
     compressHTML,
-    compileCSSForProd,
-    copyUnprocessedAssetsForProd);
+    compressCSS,
+    copyUnprocessedAssetsForProd
+);
 
 exports.default = exports.serve;
