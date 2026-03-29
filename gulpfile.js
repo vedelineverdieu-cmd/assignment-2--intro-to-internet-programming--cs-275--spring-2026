@@ -26,7 +26,9 @@ let transpileJSForDev = () => {
 // Production
 let compressJS = () => {
     return src(`js/main.js`)
-        .pipe(jsCompressor({collapseWhitespace: true}))
+        .pipe(jsCompressor({
+            compress: true
+        }))
         .pipe(dest(`prod/js`));
 };
 
